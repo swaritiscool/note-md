@@ -1,0 +1,15 @@
+.card {
+  border: 1px solid #444444;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.Title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.Subtext {
+  font-weight: 200;
+  color: #c4c4c4;
+}

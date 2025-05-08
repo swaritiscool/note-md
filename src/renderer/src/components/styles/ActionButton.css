@@ -1,0 +1,20 @@
+.Action {
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  outline: #8f8f8f 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 10px;
+  transition: 150ms ease-in-out;
+}
+
+.Action:hover {
+  font-size: 18px;
+  background-color: #ffffff1f;
+  cursor: pointer;
+  outline: #eee 1px solid;
+}
