@@ -2,6 +2,7 @@
   border: 1px solid #444444;
   border-radius: 10px;
   padding: 10px;
+  transition: all 250ms ease;
 }
 
 .Title {
@@ -12,4 +13,9 @@
 .Subtext {
   font-weight: 200;
   color: #c4c4c4;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.24);
+  cursor: pointer;
 }

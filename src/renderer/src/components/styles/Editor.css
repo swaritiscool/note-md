@@ -1,0 +1,40 @@
+.Editor * {
+  color: #fff;
+}
+
+.Editor {
+  min-width: 73vw;
+  min-height: 100vh;
+}
+
+.Editor p {
+  font-size: 19px
+}
+
+.Editor h1 {
+  font-size: 38px;
+  font-weight: 600;
+}
+
+.Editor h2 {
+  font-size: 35px;
+}
+
+.Editor h3 {
+  font-size: 30px;
+}
+
+.Editor blockquote {
+  margin: 10px 0;
+  padding: 0.75em 1.5em;
+  border-left: 4px solid #ccc;
+  font-style: italic;
+  color: #333;
+  border-radius: 4px;
+  font-size: 19px;
+}
+
+.Editor li {
+  list-style: disc;
+  font-size: 19px
+}

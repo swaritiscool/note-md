@@ -1,5 +1,8 @@
 import { RootLayout, Sidebar, Editor } from '@/components'
 import { NoteCard } from '@/components'
+import { Notes } from './utils'
+import '@mdxeditor/editor/style.css'
+import { MarkDownEditor } from './components'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -7,17 +10,15 @@ function App() {
   return (
     <RootLayout>
       <Sidebar>
-        <NoteCard title={'Hello'} sub={'This is some random text'} />
-        <NoteCard title={'Hello'} sub={'This is some random text'} />
-        <NoteCard title={'Hello'} sub={'This is some random text'} />
-        <NoteCard
-          title={'Hello'}
-          sub={'This is some random text ndvkn dfkjb kjdfkjb kjndkjg kjhn lbngbkjn'}
-        />
-        <NoteCard title={'Hello'} sub={'This is some random text'} />
-        <NoteCard title={'Hello'} sub={'This is some random text'} />
+        {Notes.length > 0 ? (
+          Notes.map(({ title, sub }) => <NoteCard title={title} sub={sub} />)
+        ) : (
+          <p style={{ alignSelf: 'center', fontSize: 15 }}>No Notes Yet...</p>
+        )}
       </Sidebar>
-      <Editor>Editor</Editor>
+      <Editor>
+        <MarkDownEditor />
+      </Editor>
     </RootLayout>
   )
 }
