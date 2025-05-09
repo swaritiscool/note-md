@@ -39,4 +39,5 @@
   color: #fff;
   height: 100%;
   border-left: 1px solid #202025;
+  flex-direction: column;
 }

@@ -6,8 +6,7 @@ import icon from '../../resources/icon.png?asset'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    fullscreenable: true,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -16,14 +15,15 @@ function createWindow() {
       sandbox: false
     },
     center: true,
-    title: "NoteMD",
+    title: 'NoteMD',
     vibrancy: 'under-window',
     visualEffectState: 'active',
     titleBarStyle: 'default',
-    backgroundMaterial: 'acrylic',
+    backgroundMaterial: 'acrylic'
   })
 
   mainWindow.on('ready-to-show', () => {
+    mainWindow.maximize()
     mainWindow.show()
   })
 

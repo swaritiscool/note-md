@@ -2,7 +2,7 @@ import { RootLayout, Sidebar, Editor } from '@/components'
 import { NoteCard } from '@/components'
 import { Notes } from './utils'
 import '@mdxeditor/editor/style.css'
-import { MarkDownEditor } from './components'
+import { MarkDownEditor, TitleComponent } from './components'
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
@@ -17,6 +17,7 @@ function App() {
         )}
       </Sidebar>
       <Editor>
+        <TitleComponent>Title</TitleComponent>
         <MarkDownEditor />
       </Editor>
     </RootLayout>
