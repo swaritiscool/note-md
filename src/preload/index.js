@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcMain, ipcRenderer } from 'electron'
 
 const fs = require('fs')
 const path = require('path')
@@ -10,15 +10,23 @@ if (!fs.existsSync(dirPath)) {
   fs.mkdirSync(dirPath, { recursive: true })
 }
 
+contextBridge.exposeInMainWorld('electron', {
+  on: (channel, callback) => ipcRenderer.on(channel, callback),
+  send: (channel, callback) => ipcRenderer.send(channel, callback)
+})
+
 contextBridge.exposeInMainWorld('markdownFiles', {
   listMarkdownFiles: () => {
     const files = fs.readdirSync(dirPath)
     const initList = files.filter((file) => path.extname(file).toLowerCase() === '.md')
     let list = []
+    const formatter = new Intl.DateTimeFormat('en-IN', {
+      dateStyle: 'medium'
+    })
     initList.map((obj) => {
       const file = {
         title: path.basename(obj, '.md'),
-        sub: fs.statSync(path.join(dirPath, obj)).mtime.toLocaleString()
+        sub: formatter.format(fs.statSync(path.join(dirPath, obj)).mtime)
       }
       list.push(file)
     })

@@ -3,6 +3,10 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -30,6 +34,13 @@ function createWindow() {
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
+  })
+
+  const dirFiles = path.join(os.homedir(), 'Note-MD_Files')
+
+  fs.watch(dirFiles, (e, filename) => {
+    console.log(`${filename} was ${e}`)
+    mainWindow.webContents.send('file-changed', filename)
   })
 
   // HMR for renderer base on electron-vite cli.

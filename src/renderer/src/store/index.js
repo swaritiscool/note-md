@@ -1,20 +1,23 @@
 import { atom } from 'jotai'
-import { Notes } from './Notes'
 
-export const notesAtom = atom(Notes)
+export const notesAtom = atom(window.markdownFiles.listMarkdownFiles())
 
 export const selectedNoteIndex = atom(null)
 
 export const selectedNoteAtom = atom((get) => {
   const notes = get(notesAtom)
-  const notesIndex = get(selectedNoteIndex)
+  const index = get(selectedNoteIndex)
 
-  if (!selectedNoteIndex) return null
+  if (index === null || notes.length === 0) return null
 
-  const selectedNote = notes[notesIndex]
-
+  const selectedNote = notes[index]
   return {
     ...selectedNote,
-    content: `Hello From Notes ${selectedNoteIndex}`
+    content: `Hello From Notes ${index}`
   }
+})
+
+export const refreshNotesAtom = atom(null, (get, set) => {
+  const updatedNotes = window.markdownFiles.listMarkdownFiles()
+  set(notesAtom, updatedNotes)
 })
