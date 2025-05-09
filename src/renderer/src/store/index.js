@@ -4,6 +4,8 @@ export const notesAtom = atom(window.markdownFiles.listMarkdownFiles())
 
 export const selectedNoteIndex = atom(null)
 
+export const isSaved = atom(true)
+
 export const selectedNoteAtom = atom((get) => {
   const notes = get(notesAtom)
   const index = get(selectedNoteIndex)
