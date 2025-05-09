@@ -1,10 +1,13 @@
 .titlebar {
   display: fixed;
-  width: 100%;
+  /* width: 100%; */
   display: flex;
   align-items: center;
   justify-content: center;
   background: #262729;
   padding: 8px;
   border-radius: 10px;
+  width: 250px;
+  font-size: 18px;
+  align-self: center;
 }

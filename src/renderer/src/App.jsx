@@ -1,17 +1,20 @@
 import { RootLayout, Sidebar, Editor } from '@/components'
 import { NoteCard } from '@/components'
-import { Notes } from './utils'
 import '@mdxeditor/editor/style.css'
 import { MarkDownEditor, TitleComponent } from './components'
+import { useAtom } from 'jotai'
+import { notesAtom } from './store'
 
 function App() {
-  const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+  // const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+
+  const [Notes, setNotes] = useAtom(notesAtom)
 
   return (
     <RootLayout>
       <Sidebar>
         {Notes.length > 0 ? (
-          Notes.map(({ title, sub }) => <NoteCard title={title} sub={sub} />)
+          Notes.map((item, index) => <NoteCard key={index} title={item.title} sub={item.sub} />)
         ) : (
           <p style={{ alignSelf: 'center', fontSize: 15 }}>No Notes Yet...</p>
         )}
