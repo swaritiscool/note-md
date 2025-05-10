@@ -10,10 +10,10 @@ import {
 } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
 
-export const MarkDownEditor = ({...props}) => {
+export const MarkDownEditor = ({ ...props }) => {
   return (
     <MDXEditor
-      markdown="# Title"
+      markdown=""
       plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), markdownShortcutPlugin()]}
       contentEditableClassName="Editor"
       styles={{ color: '#fff' }}

@@ -3,8 +3,8 @@ import { NoteCard } from '@/components'
 import '@mdxeditor/editor/style.css'
 import { MarkDownEditor, TitleComponent } from './components'
 import { useAtom } from 'jotai'
-import { isSaved, notesAtom, refreshNotesAtom } from './store'
-import { useEffect, useState } from 'react'
+import { editorContent, isSaved, lastSavedEditorAtom, notesAtom } from './store'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNotesList } from './hooks/useNotesList'
 
 function App() {
@@ -18,9 +18,28 @@ function App() {
 
   const [response, setResponse] = useState()
 
+  const [editor, setEditor] = useAtom(editorContent)
+  const [lastEditor, setLastEditor] = useAtom(lastSavedEditorAtom)
+
+  useEffect(() => {
+    console.log('Editor content: ', editor)
+
+    if (lastEditor != editor) {
+      setSaved(false)
+      console.log('Unsaved Changes')
+    } else {
+      setSaved(true)
+      console.log('Saved Changes')
+    }
+  }, [editor])
+
+  const handleSave = () => {
+    setLastEditor(editor)
+  }
+
   useEffect(() => {
     handleClick(null)
-    setSaved(false)
+    setSaved(true)
     window.electron.on('file-changed', () => {
       console.log('File system changed — refreshing notes...')
       setNotes(window.markdownFiles.listMarkdownFiles())
@@ -29,6 +48,7 @@ function App() {
       console.log('Result: ', result)
       setResponse(result)
     })
+    setLastEditor(editor)
   }, [])
 
   const handleClick = (index) => {
@@ -79,8 +99,13 @@ function App() {
         )}
       </Sidebar>
       <Editor>
-        <TitleComponent>New File</TitleComponent>
-        <MarkDownEditor />
+        <TitleComponent>New File{saved ? '' : '*'}</TitleComponent>
+        <MarkDownEditor
+          autofocus
+          onChange={(md, initial) => {
+            setEditor(md)
+          }}
+        />
       </Editor>
     </RootLayout>
   )
