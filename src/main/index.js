@@ -75,12 +75,14 @@ app.whenReady().then(() => {
 
   const dialog_result = (event) => {
     const browserWindow = BrowserWindow.fromWebContents(event.sender) // Get the parent window
-    return dialog.showMessageBoxSync(browserWindow, {
+    const result = dialog.showMessageBoxSync(browserWindow, {
       type: 'question',
       title: 'Are you sure?',
       message: 'Are you sure you want to leave current file? You have unsaved changes.',
       buttons: ['Yes', 'No']
     })
+    event.sender.send('Result_Unsaved_Dialog', result)
+    return result
   }
 
   ipcMain.on('confirm-notSaved', dialog_result)

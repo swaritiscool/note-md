@@ -16,7 +16,7 @@ function App() {
 
   const [saved, setSaved] = useAtom(isSaved)
 
-  const [response, setResponse] = useState(null)
+  const [response, setResponse] = useState()
 
   useEffect(() => {
     handleClick(null)
@@ -25,7 +25,7 @@ function App() {
       console.log('File system changed — refreshing notes...')
       setNotes(window.markdownFiles.listMarkdownFiles())
     })
-    window.electron.on('Result_Unsaved_Dialog', (result) => {
+    window.electron.on('Result_Unsaved_Dialog', (_event, result) => {
       console.log('Result: ', result)
       setResponse(result)
     })
