@@ -80,6 +80,27 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  const prompt = require('electron-prompt')
+
+  ipcMain.handle('ask-user-input', async () => {
+    const result = await prompt({
+      title: 'Enter File Name',
+      label: 'Enter the filename:',
+      inputAttrs: {
+        type: 'text'
+      },
+      type: 'input',
+      resizable: false,
+      alwaysOnTop: true,
+      closable: false
+    })
+
+    if (result === null || result.trim() === '') {
+      return 'User did not enter input' // Handle accordingly
+    }
+
+    return result
+  })
   const dialog_result = (event) => {
     const browserWindow = BrowserWindow.fromWebContents(event.sender) // Get the parent window
     const result = dialog.showMessageBoxSync(browserWindow, {

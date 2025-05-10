@@ -37,14 +37,19 @@ function App() {
     }
   }, [response, indexTemp])
 
-  const handleSave = () => {
-    if (!isSelected || !Notes[notesIndex]) {
-      console.warn('Cannot save: No note selected or note does not exist')
-      return
-    }
+  const handleSave = async () => {
     if (isSelected) {
       window.electron.send('write-file', Notes[notesIndex].title + '.md', editor.current || '')
       console.log(`Tried saving ${Notes[notesIndex].title + '.md'} with content: ${editor.current}`)
+      console.log(editor.current)
+      setLastEditor(editor.current)
+      setSaved(true)
+      console.log('Saved')
+    }
+    if (!isSelected) {
+      const input = await window.electronAPI.askUserInput()
+      window.electron.send('write-file', input + '.md', editor.current || '')
+      console.log(`Tried saving ${input + '.md'} with content: ${editor.current}`)
       console.log(editor.current)
       setLastEditor(editor.current)
       setSaved(true)

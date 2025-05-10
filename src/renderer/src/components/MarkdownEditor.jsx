@@ -1,4 +1,10 @@
-import { linkDialogPlugin, linkPlugin, MDXEditor, tablePlugin } from '@mdxeditor/editor'
+import {
+  imagePlugin,
+  linkDialogPlugin,
+  linkPlugin,
+  MDXEditor,
+  tablePlugin
+} from '@mdxeditor/editor'
 import React from 'react'
 import './styles/Editor.css'
 import { headingsPlugin, listsPlugin, quotePlugin, markdownShortcutPlugin } from '@mdxeditor/editor'
@@ -14,7 +20,8 @@ export const MarkDownEditor = ({ ...props }) => {
         markdownShortcutPlugin(),
         linkPlugin(),
         linkDialogPlugin(),
-        tablePlugin()
+        tablePlugin(),
+        imagePlugin()
       ]}
       contentEditableClassName="Editor"
       styles={{ color: '#fff' }}

@@ -25,6 +25,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mdxeditor/editor": "^3.32.2",
+    "electron-prompt": "^1.7.0",
     "jotai": "^2.12.4",
     "react-icons": "^5.5.0"
   },

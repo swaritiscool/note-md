@@ -15,6 +15,10 @@ contextBridge.exposeInMainWorld('electron', {
   send: (channel, ...args) => ipcRenderer.send(channel, ...args)
 })
 
+contextBridge.exposeInMainWorld('electronAPI', {
+  askUserInput: () => ipcRenderer.invoke('ask-user-input')
+})
+
 contextBridge.exposeInMainWorld('markdownFiles', {
   listMarkdownFiles: () => {
     const files = fs.readdirSync(dirPath)
