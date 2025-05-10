@@ -16,10 +16,11 @@ function App() {
 
   const [saved, setSaved] = useAtom(isSaved)
 
-  const [response, setResponse] = useState()
+  const [response, setResponse] = useState(null)
 
   const [editor, setEditor] = useAtom(editorContent)
   const [lastEditor, setLastEditor] = useAtom(lastSavedEditorAtom)
+  const [indexTemp, setIndex] = useState(null)
 
   useEffect(() => {
     console.log('Editor content: ', editor)
@@ -32,6 +33,17 @@ function App() {
       console.log('Saved Changes')
     }
   }, [editor])
+
+  useEffect(() => {
+    if (response === 0 && indexTemp !== null) {
+      console.log(`Index passed : ${indexTemp}`)
+      console.log('Attempted Selection')
+      handleNoteSelect(indexTemp)
+    }
+    if (response === 1 && indexTemp !== null) {
+      return
+    }
+  }, [response, indexTemp])
 
   const handleSave = () => {
     setLastEditor(editor)
@@ -49,6 +61,14 @@ function App() {
     window.electron.on('Result_Unsaved_Dialog', (_event, result) => {
       console.log('Result: ', result)
       setResponse(result)
+
+      if (response === 0) {
+        console.log(`Index passed : ${indexTemp}`)
+        console.log('Attempted Selection')
+        handleNoteSelect(indexTemp)
+      } else {
+        return
+      }
     })
     setLastEditor(editor)
   }, [])
@@ -83,6 +103,8 @@ function App() {
                   sub={item.sub}
                   onClick={(e) => {
                     e.preventDefault()
+                    setIndex(index)
+
                     handleClick(index)
                   }}
                   id="#on"
@@ -97,6 +119,7 @@ function App() {
                   sub={item.sub}
                   onClick={(e) => {
                     e.preventDefault()
+                    setIndex(index)
                     handleClick(index)
                   }}
                 />
