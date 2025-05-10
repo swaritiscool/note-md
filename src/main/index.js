@@ -49,7 +49,7 @@ function createWindow() {
 
   if (!fs.existsSync(path.join(dirPath, 'Welcome.md'))) {
     fs.writeFileSync(
-      path.join(dirPath, 'Welcome.md'),
+      path.join(dirPath, 'Welcome 👋🚀.md'),
       "# 🚀 Welcome to Note-MD! 👋\n\nStart by editing this file!\n\nInsert links by going to the next line and pasting them!\n\nInsert quotes using '>'\n\n> Like This!😎😎😎😎\n\nTip: Stay in the quote using Shift+Enter\n\n## 🚀Enjoy Note MD! 🚀\n\nP.S. Check out [https://swarchat.vercel.app/about](https://swarchat.vercel.app/about) 🤫🤫🤫"
     )
   }
@@ -96,7 +96,7 @@ app.whenReady().then(() => {
     })
 
     if (result === null || result.trim() === '') {
-      return 'User did not enter input' // Handle accordingly
+      return
     }
 
     return result

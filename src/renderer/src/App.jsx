@@ -28,6 +28,25 @@ function App() {
 
   const [contentVersion, setContentVersion] = useState(0)
 
+  const handleNewFile = async () => {
+    if (!saved) {
+      await handleSave()
+    }
+
+    // Clear editor content and state
+    editor.current = ''
+    setLastEditor('')
+    setSaved(false)
+    setIsSelected(false)
+    setIndex(null)
+    handleNoteSelect(null)
+
+    // Force editor to re-render
+    setContentVersion((v) => v + 1)
+
+    console.log('New file created after saving previous. Editor cleared and selection reset.')
+  }
+
   useEffect(() => {
     if (response === 0 && indexTemp !== null) {
       selectAndRead(indexTemp)
@@ -95,6 +114,17 @@ function App() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleSave])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault()
+        handleNewFile()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleNewFile])
 
   const selectAndRead = (index) => {
     console.log(`Index passed : ${index}`)
@@ -170,7 +200,7 @@ function App() {
       </Sidebar>
       <Editor>
         <TitleComponent>
-          {isSelected ? Notes[notesIndex].title : 'New File'}
+          {isSelected && Notes[notesIndex] ? Notes[notesIndex].title : 'New File'}
           {saved ? '' : '*'}
         </TitleComponent>
         <MarkDownEditor

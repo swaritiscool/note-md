@@ -25,7 +25,8 @@ contextBridge.exposeInMainWorld('markdownFiles', {
     const initList = files.filter((file) => path.extname(file).toLowerCase() === '.md')
     let list = []
     const formatter = new Intl.DateTimeFormat('en-IN', {
-      dateStyle: 'medium'
+      dateStyle: 'medium',
+      timeStyle: 'short'
     })
     initList.map((obj) => {
       const file = {
