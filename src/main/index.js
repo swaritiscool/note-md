@@ -101,6 +101,19 @@ app.whenReady().then(() => {
     })
   })
 
+  ipcMain.on('write-file', (event, fileName, data) => {
+    const homeDir = path.join(os.homedir(), 'Note-MD_Files')
+    const filePath = path.join(homeDir, fileName)
+
+    fs.writeFile(filePath, data, (err) => {
+      if (err) {
+        console.error(err)
+      } else {
+        console.log('Save Success')
+      }
+    })
+  })
+
   createWindow()
 
   app.on('activate', function () {

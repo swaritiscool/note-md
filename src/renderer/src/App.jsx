@@ -3,7 +3,7 @@ import { NoteCard } from '@/components'
 import '@mdxeditor/editor/style.css'
 import { MarkDownEditor, TitleComponent } from './components'
 import { useAtom } from 'jotai'
-import { editorContent, isSaved, lastSavedEditorAtom, notesAtom } from './store'
+import { editorContent, fileSelected, isSaved, lastSavedEditorAtom, notesAtom } from './store'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNotesList } from './hooks/useNotesList'
 
@@ -18,23 +18,15 @@ function App() {
 
   const [response, setResponse] = useState(null)
 
-  const [editor, setEditor] = useAtom(editorContent)
+  const editor = useRef('')
   const [lastEditor, setLastEditor] = useAtom(lastSavedEditorAtom)
   const [indexTemp, setIndex] = useState(null)
 
+  const [isSelected, setIsSelected] = useAtom(fileSelected)
+
   const pendingIndexRef = useRef(null)
 
-  useEffect(() => {
-    console.log('Editor content: ', editor)
-
-    if (lastEditor != editor) {
-      setSaved(false)
-      console.log('Unsaved Changes')
-    } else {
-      setSaved(true)
-      console.log('Saved Changes')
-    }
-  }, [editor])
+  const [contentVersion, setContentVersion] = useState(0)
 
   useEffect(() => {
     if (response === 0 && indexTemp !== null) {
@@ -46,9 +38,21 @@ function App() {
   }, [response, indexTemp])
 
   const handleSave = () => {
-    setLastEditor(editor)
-    setSaved(true)
-    console.log('Saved')
+    if (!isSelected || !Notes[notesIndex]) {
+      console.warn('Cannot save: No note selected or note does not exist')
+      return
+    }
+    if (isSelected) {
+      window.electron.send('write-file', Notes[notesIndex].title + '.md', editor.current || '')
+      console.log(`Tried saving ${Notes[notesIndex].title + '.md'} with content: ${editor.current}`)
+      console.log(editor.current)
+      setLastEditor(editor.current)
+      setSaved(true)
+      console.log('Saved')
+    }
+    // setLastEditor(editor)
+    // setSaved(true)
+    // console.log('Saved')
   }
 
   useEffect(() => {
@@ -66,21 +70,25 @@ function App() {
         pendingIndexRef.current = null // reset
       }
     })
-    setLastEditor(editor)
+    setLastEditor(editor.current)
 
     window.electron.on('File_Read', (e, data) => {
-      console.log(data)
-      setEditor(data)
+      editor.current = data
       setLastEditor(data)
+      setContentVersion((v) => v + 1) // force re-render
     })
   }, [])
 
-  window.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 's') {
-      console.log('Ctrl+S inside app')
-      handleSave()
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault()
+        handleSave()
+      }
     }
-  })
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleSave])
 
   const selectAndRead = (index) => {
     console.log(`Index passed : ${index}`)
@@ -112,12 +120,17 @@ function App() {
     selectAndRead(index)
   }
 
+  useEffect(() => {
+    console.log('File Selected: ', isSelected)
+  }, [isSelected])
+
   return (
     <RootLayout>
       <Sidebar>
         {Notes.length > 0 ? (
           Notes.map((item, index) => {
             if (index === notesIndex) {
+              setIsSelected(true)
               return (
                 <NoteCard
                   key={index}
@@ -126,7 +139,6 @@ function App() {
                   onClick={(e) => {
                     e.preventDefault()
                     setIndex(index)
-
                     handleClick(index)
                   }}
                   id="#on"
@@ -153,13 +165,17 @@ function App() {
         )}
       </Sidebar>
       <Editor>
-        <TitleComponent>New File{saved ? '' : '*'}</TitleComponent>
+        <TitleComponent>
+          {isSelected ? Notes[notesIndex].title : 'New File'}
+          {saved ? '' : '*'}
+        </TitleComponent>
         <MarkDownEditor
           autofocus
-          key={editor}
-          markdown={editor}
+          key={contentVersion}
+          markdown={editor.current}
           onChange={(md, initial) => {
-            setEditor(md)
+            editor.current = md
+            setSaved(md === lastEditor)
           }}
         />
       </Editor>

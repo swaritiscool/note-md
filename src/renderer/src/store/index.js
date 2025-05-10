@@ -10,6 +10,8 @@ export const editorContent = atom('')
 
 export const lastSavedEditorAtom = atom('')
 
+export const fileSelected = atom(false)
+
 export const selectedNoteAtom = atom((get) => {
   const notes = get(notesAtom)
   const index = get(selectedNoteIndex)
