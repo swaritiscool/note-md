@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -36,9 +36,13 @@ function createWindow() {
     return { action: 'deny' }
   })
 
-  const dirFiles = path.join(os.homedir(), 'Note-MD_Files')
+  const dirPath = path.join(os.homedir(), 'Note-MD_Files')
 
-  fs.watch(dirFiles, (e, filename) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true })
+  }
+
+  fs.watch(dirPath, (e, filename) => {
     console.log(`${filename} was ${e}`)
     mainWindow.webContents.send('file-changed', filename)
   })
@@ -68,6 +72,20 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  ipcMain.on('confirm-notSaved', () => {
+    dialog
+      .showMessageBoxSync('window', {
+        type: 'question',
+        title: 'Are you sure?',
+        message: 'Are you sure you want to leave current file? You have unsaved changes.',
+        buttons: ['Yes', 'No']
+      })
+      .then((result) => {
+        console.log(result)
+        mainWindow.webContents.send('Result_Unsaved_Dialog', result)
+      })
+  })
 
   createWindow()
 

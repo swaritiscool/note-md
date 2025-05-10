@@ -12,7 +12,7 @@ if (!fs.existsSync(dirPath)) {
 
 contextBridge.exposeInMainWorld('electron', {
   on: (channel, callback) => ipcRenderer.on(channel, callback),
-  send: (channel, callback) => ipcRenderer.send(channel, callback)
+  send: (channel) => ipcRenderer.send(channel)
 })
 
 contextBridge.exposeInMainWorld('markdownFiles', {

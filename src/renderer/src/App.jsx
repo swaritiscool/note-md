@@ -4,7 +4,7 @@ import '@mdxeditor/editor/style.css'
 import { MarkDownEditor, TitleComponent } from './components'
 import { useAtom } from 'jotai'
 import { isSaved, notesAtom, refreshNotesAtom } from './store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNotesList } from './hooks/useNotesList'
 
 function App() {
@@ -16,18 +16,32 @@ function App() {
 
   const [saved, setSaved] = useAtom(isSaved)
 
+  const [response, setResponse] = useState(null)
+
+  const [pendingIndex, setPendingIndex] = useState()
+
   useEffect(() => {
     handleClick(null)
+    setSaved(false)
     window.electron.on('file-changed', () => {
       console.log('File system changed — refreshing notes...')
       setNotes(window.markdownFiles.listMarkdownFiles())
     })
+    window.electron.on('Result_Unsaved_Dialog', (result) => {
+      console.log(result)
+      setResponse(result)
+    })
   }, [])
 
   const handleClick = (index) => {
-    console.log(`Index passed : ${index}`)
-    console.log(index)
-    handleNoteSelect(index)
+    setPendingIndex(index)
+    if (!saved) {
+      window.electron.send('confirm-notSaved')
+      return
+    }
+    console.log(`Index passed : ${pendingIndex}`)
+    console.log(pendingIndex)
+    handleNoteSelect(pendingIndex)
   }
 
   return (
