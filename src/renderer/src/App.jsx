@@ -22,6 +22,8 @@ function App() {
   const [lastEditor, setLastEditor] = useAtom(lastSavedEditorAtom)
   const [indexTemp, setIndex] = useState(null)
 
+  const pendingIndexRef = useRef(null)
+
   useEffect(() => {
     console.log('Editor content: ', editor)
 
@@ -36,9 +38,7 @@ function App() {
 
   useEffect(() => {
     if (response === 0 && indexTemp !== null) {
-      console.log(`Index passed : ${indexTemp}`)
-      console.log('Attempted Selection')
-      handleNoteSelect(indexTemp)
+      selectAndRead(indexTemp)
     }
     if (response === 1 && indexTemp !== null) {
       return
@@ -52,7 +52,6 @@ function App() {
   }
 
   useEffect(() => {
-    handleClick(null)
     setSaved(true)
     window.electron.on('file-changed', () => {
       console.log('File system changed — refreshing notes...')
@@ -62,15 +61,18 @@ function App() {
       console.log('Result: ', result)
       setResponse(result)
 
-      if (response === 0) {
-        console.log(`Index passed : ${indexTemp}`)
-        console.log('Attempted Selection')
-        handleNoteSelect(indexTemp)
-      } else {
-        return
+      if (result === 0 && pendingIndexRef.current !== null) {
+        selectAndRead(pendingIndexRef.current)
+        pendingIndexRef.current = null // reset
       }
     })
     setLastEditor(editor)
+
+    window.electron.on('File_Read', (e, data) => {
+      console.log(data)
+      setEditor(data)
+      setLastEditor(data)
+    })
   }, [])
 
   window.addEventListener('keydown', (e) => {
@@ -80,14 +82,34 @@ function App() {
     }
   })
 
+  const selectAndRead = (index) => {
+    console.log(`Index passed : ${index}`)
+    handleNoteSelect(index)
+
+    const read = (file) => {
+      if (!file) {
+        console.error('Cannot read undefined file')
+        return
+      }
+      window.electron.send('read-file', file)
+    }
+
+    if (index !== null && Notes[index]) {
+      read(Notes[index].title + '.md')
+    } else {
+      console.error('Invalid note index or missing Notes array')
+    }
+  }
+
   const handleClick = (index) => {
     if (!saved) {
-      window.electron.send('confirm-notSaved')
+      pendingIndexRef.current = index
+      window.electron.send('confirm-notSaved', () => {
+        return
+      })
       return
     }
-    console.log(`Index passed : ${index}`)
-    console.log(index)
-    handleNoteSelect(index)
+    selectAndRead(index)
   }
 
   return (
@@ -134,6 +156,8 @@ function App() {
         <TitleComponent>New File{saved ? '' : '*'}</TitleComponent>
         <MarkDownEditor
           autofocus
+          key={editor}
+          markdown={editor}
           onChange={(md, initial) => {
             setEditor(md)
           }}

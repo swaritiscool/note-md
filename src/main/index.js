@@ -87,6 +87,20 @@ app.whenReady().then(() => {
 
   ipcMain.on('confirm-notSaved', dialog_result)
 
+  ipcMain.on('read-file', (event, fileName) => {
+    const homeDir = path.join(os.homedir(), 'Note-MD_Files')
+    const filePath = path.join(homeDir, fileName)
+
+    fs.readFile(filePath, 'utf-8', (err, data) => {
+      if (err) {
+        console.error(err)
+        event.reply('Error_File_Reading', err)
+        return
+      }
+      event.reply('File_Read', data)
+    })
+  })
+
   createWindow()
 
   app.on('activate', function () {
