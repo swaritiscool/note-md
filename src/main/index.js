@@ -73,19 +73,17 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  ipcMain.on('confirm-notSaved', () => {
-    dialog
-      .showMessageBoxSync('window', {
-        type: 'question',
-        title: 'Are you sure?',
-        message: 'Are you sure you want to leave current file? You have unsaved changes.',
-        buttons: ['Yes', 'No']
-      })
-      .then((result) => {
-        console.log(result)
-        mainWindow.webContents.send('Result_Unsaved_Dialog', result)
-      })
-  })
+  const dialog_result = (event) => {
+    const browserWindow = BrowserWindow.fromWebContents(event.sender) // Get the parent window
+    return dialog.showMessageBoxSync(browserWindow, {
+      type: 'question',
+      title: 'Are you sure?',
+      message: 'Are you sure you want to leave current file? You have unsaved changes.',
+      buttons: ['Yes', 'No']
+    })
+  }
+
+  ipcMain.on('confirm-notSaved', dialog_result)
 
   createWindow()
 

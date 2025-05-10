@@ -18,8 +18,6 @@ function App() {
 
   const [response, setResponse] = useState(null)
 
-  const [pendingIndex, setPendingIndex] = useState()
-
   useEffect(() => {
     handleClick(null)
     setSaved(false)
@@ -28,20 +26,19 @@ function App() {
       setNotes(window.markdownFiles.listMarkdownFiles())
     })
     window.electron.on('Result_Unsaved_Dialog', (result) => {
-      console.log(result)
+      console.log('Result: ', result)
       setResponse(result)
     })
   }, [])
 
   const handleClick = (index) => {
-    setPendingIndex(index)
     if (!saved) {
       window.electron.send('confirm-notSaved')
       return
     }
-    console.log(`Index passed : ${pendingIndex}`)
-    console.log(pendingIndex)
-    handleNoteSelect(pendingIndex)
+    console.log(`Index passed : ${index}`)
+    console.log(index)
+    handleNoteSelect(index)
   }
 
   return (
