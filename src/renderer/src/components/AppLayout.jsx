@@ -1,7 +1,7 @@
 import React from 'react'
 import './styles/Layout.css'
 import { ActionButton } from './ActionButton'
-import { FaFilePen, FaTrashCan, FaGear } from 'react-icons/fa6'
+import { FaFilePen, FaTrashCan, FaGear, FaFileCircleCheck } from 'react-icons/fa6'
 
 export const Sidebar = ({ children, ...props }) => {
   return (
@@ -9,6 +9,9 @@ export const Sidebar = ({ children, ...props }) => {
       <div className="utils">
         <ActionButton>
           <FaFilePen color="#fff" />
+        </ActionButton>
+        <ActionButton>
+          <FaFileCircleCheck color="#fff" />
         </ActionButton>
         <ActionButton>
           <FaTrashCan color="#fff" />

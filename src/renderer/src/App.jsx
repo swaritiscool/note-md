@@ -35,6 +35,8 @@ function App() {
 
   const handleSave = () => {
     setLastEditor(editor)
+    setSaved(true)
+    console.log('Saved')
   }
 
   useEffect(() => {
@@ -50,6 +52,13 @@ function App() {
     })
     setLastEditor(editor)
   }, [])
+
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 's') {
+      console.log('Ctrl+S inside app')
+      handleSave()
+    }
+  })
 
   const handleClick = (index) => {
     if (!saved) {
