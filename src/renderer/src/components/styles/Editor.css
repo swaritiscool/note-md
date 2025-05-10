@@ -1,3 +1,7 @@
+:root {
+  --avg-size: 19px;
+}
+
 .Editor * {
   color: #fff;
 }
@@ -8,21 +12,22 @@
 }
 
 .Editor p {
-  font-size: 19px;
+  font-size: var(--avg-size);
+  line-height: 40px;
 }
 
 .Editor h1 {
-  font-size: 42px;
+  font-size: 68px;
   font-weight: 700;
 }
 
 .Editor h2 {
   font-weight: 300;
-  font-size: 32px;
+  font-size: 52px;
 }
 
 .Editor h3 {
-  font-size: 22px;
+  font-size: 48px;
 }
 
 .Editor blockquote {
@@ -32,10 +37,10 @@
   font-style: italic;
   color: #333;
   border-radius: 4px;
-  font-size: 19px;
+  font-size: var(--avg-size);
 }
 
 .Editor li {
   list-style: disc;
-  font-size: 19px;
+  font-size: var(--avg-size);
 }

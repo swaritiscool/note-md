@@ -74,7 +74,8 @@ function App() {
 
     window.electron.on('File_Read', (e, data) => {
       editor.current = data
-      setLastEditor(data)
+      setLastEditor(editor.current)
+      console.log('File read. Editor:', data)
       setContentVersion((v) => v + 1) // force re-render
     })
   }, [])
@@ -112,9 +113,7 @@ function App() {
   const handleClick = (index) => {
     if (!saved) {
       pendingIndexRef.current = index
-      window.electron.send('confirm-notSaved', () => {
-        return
-      })
+      window.electron.send('confirm-notSaved')
       return
     }
     selectAndRead(index)
@@ -175,6 +174,8 @@ function App() {
           markdown={editor.current}
           onChange={(md, initial) => {
             editor.current = md
+            console.log('Editor Changed, ', md)
+            console.log('Saved? ', md === lastEditor)
             setSaved(md === lastEditor)
           }}
         />

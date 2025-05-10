@@ -47,6 +47,13 @@ function createWindow() {
     mainWindow.webContents.send('file-changed', filename)
   })
 
+  if (!fs.existsSync(path.join(dirPath, 'Welcome.md'))) {
+    fs.writeFileSync(
+      path.join(dirPath, 'Welcome.md'),
+      "# 🚀 Welcome to Note-MD! 👋\n\nStart by editing this file!\n\nInsert links by going to the next line and pasting them!\n\nInsert quotes using '>'\n\n> Like This!😎😎😎😎\n\nTip: Stay in the quote using Shift+Enter\n\n## 🚀Enjoy Note MD! 🚀\n\nP.S. Check out [https://swarchat.vercel.app/about](https://swarchat.vercel.app/about) 🤫🤫🤫"
+    )
+  }
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
